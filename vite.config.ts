@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/jcv-chat-fānyì/' // Reemplaza la ruta genérica por el nombre exacto de tu repositorio de GitHub
+  base: '' // <-- Al dejarlo vacío, se adapta automáticamente a cualquier nombre de repositorio
 })
