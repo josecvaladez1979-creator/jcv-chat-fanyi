@@ -4,11 +4,23 @@ on:
   push:
     branches: [ main ]
 
+# Permisos necesarios requeridos para desplegar usando el método oficial de GitHub Actions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Permite un solo despliegue concurrente a la vez
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: 1. Descargar código
         uses: actions/checkout@v4
@@ -21,17 +33,15 @@ jobs:
       - name: 3. Forzar corrección y generación de estructura limpia
         run: |
           echo "Iniciando reestructuración automática..."
-          # Si el archivo App.tsx está suelto en la raíz, el bot lo mueve a la carpeta 'src' obligatoriamente
           if [ -f "App.tsx" ]; then
             mkdir -p src
             mv App.tsx src/
             echo "Movido App.tsx a la carpeta src/ de forma automática."
           fi
           
-          # Si falta el archivo puente main.tsx, el bot lo crea desde cero con código limpio
           if [ ! -f "src/main.tsx" ]; then
             mkdir -p src
-            echo "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App.tsx';\n\nReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);" > src/main.tsx
+            echo -e "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App.tsx';\n\nReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);" > src/main.tsx
             echo "Creado src/main.tsx automático."
           fi
 
@@ -41,8 +51,11 @@ jobs:
       - name: 5. Compilar ignorando cualquier advertencia menor
         run: npm run build
 
-      - name: 6. Desplegar en vivo en GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: 6. Subir artefacto compilado de Vite
+        uses: actions/upload-pages-artifact@v3
         with:
-          folder: dist
-          branch: gh-pages
+          path: 'dist' # Sube la carpeta de producción generada por Vite
+
+      - name: 7. Desplegar de forma oficial en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
