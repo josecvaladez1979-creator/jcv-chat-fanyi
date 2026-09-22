@@ -2,58 +2,47 @@ name: Despliegue con Autocorrección JCV CHAT FĀNYÌ
 
 on:
   push:
-    branches: [ main ] # Se activa cada vez que guardas cambios en la rama principal
+    branches: [ main ]
 
 jobs:
-  check-and-autofix:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Permiso clave para que el bot pueda autocorregir y guardar los cambios solo
-
+      contents: write
     steps:
-      - name: 1. Descargar código del repositorio
+      - name: 1. Descargar código
         uses: actions/checkout@v4
 
-      - name: 2. Configurar entorno de Node.js
+      - name: 2. Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
-      - name: 3. Instalar dependencias del chat
-        run: npm install
-
-      - name: 4. Buscar errores de formato y AUTOCORREGIR solos
+      - name: 3. Forzar corrección y generación de estructura limpia
         run: |
-          # Si tienes herramientas de formateo, el bot las ejecuta aquí.
-          # Forzamos una corrección automática de espacios o sangrías comunes en React.
-          echo "Buscando anomalías de sintaxis..."
+          echo "Iniciando reestructuración automática..."
+          # Si el archivo App.tsx está suelto en la raíz, el bot lo mueve a la carpeta 'src' obligatoriamente
+          if [ -f "App.tsx" ]; then
+            mkdir -p src
+            mv App.tsx src/
+            echo "Movido App.tsx a la carpeta src/ de forma automática."
+          fi
+          
+          # Si falta el archivo puente main.tsx, el bot lo crea desde cero con código limpio
+          if [ ! -f "src/main.tsx" ]; then
+            mkdir -p src
+            echo "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App.tsx';\n\nReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);" > src/main.tsx
+            echo "Creado src/main.tsx automático."
+          fi
 
-      - name: 5. Guardar correcciones automáticas en tu repositorio
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "🤖 [Bot JCV]: Errores de sintaxis corregidos automáticamente"
-          branch: main
+      - name: 4. Instalar dependencias con bypass de advertencias
+        run: npm install --legacy-peer-deps || npm install
 
-  build-and-deploy:
-    needs: check-and-autofix # No se ejecuta el despliegue hasta que el paso anterior verifique que no hay errores rotos
-    runs-on: ubuntu-latest
-    steps:
-      - name: 1. Descargar código verificado
-        uses: actions/checkout@v4
-
-      - name: 2. Configurar Node.js para compilación
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: 3. Instalar dependencias limpias
-        run: npm install
-
-      - name: 4. Compilar la aplicación móvil/web
+      - name: 5. Compilar ignorando cualquier advertencia menor
         run: npm run build
 
-      - name: 5. Desplegar gratis en GitHub Pages
+      - name: 6. Desplegar en vivo en GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist # Sube la carpeta compilada lista para abrir en el celular
+          folder: dist
+          branch: gh-pages
