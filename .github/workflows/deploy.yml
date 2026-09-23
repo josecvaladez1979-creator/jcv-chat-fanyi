@@ -30,22 +30,34 @@ jobs:
         with:
           node-version: 20
       - name: 3. Forzar corrección y generación de estructura limpia
-     run: |
-       echo "Iniciando reestructuración automática..."
-       mkdir -p src
+        run: |
+          echo "Iniciando reestructuración automática con Tailwind CSS..."
+          mkdir -p src
 
-       if [ -f "App.tsx" ]; then
-         mv App.tsx src/
-         echo "Movido App.tsx a la carpeta src/ de forma automática."
-       fi
-       
-       echo -e "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App.tsx';\nimport './index.css';\n\nReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);" > src/main.tsx
-       echo "Archivo src/main.tsx configurado y forzado con importación de CSS."
-       
-       - name: 4. Instalar dependencias con bypass de advertencias
-        run: npm install --legacy-peer-deps || npm install
+          if [ -f "App.tsx" ]; then
+            mv App.tsx src/
+            echo "Movido App.tsx a la carpeta src/ de forma automática."
+          fi
+          
+          # 1. Crear el archivo de configuración de Tailwind CSS necesario
+          echo -e "/** @type {import('tailwindcss').Config} */\nexport default {\n  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],\n  theme: { extend: {} },\n  plugins: [],\n}" > tailwind.config.js
+          
+          # 2. Crear un archivo postcss.config.js para que Vite procese los estilos
+          echo -e "export default {\n  plugins: {\n    tailwindcss: {},\n    autoprefixer: {},\n  },\n}" > postcss.config.js
+
+          # 3. Crear el archivo index.css inyectando las directivas oficiales de Tailwind
+          echo -e "@tailwind base;\n@tailwind components;\n@tailwind utilities;" > src/index.css
+
+          # 4. Sobrescribir main.tsx garantizando la importación de index.css
+          echo -e "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App.tsx';\nimport './index.css';\n\nReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);" > src/main.tsx
+          echo "Estructura y archivos de Tailwind CSS forzados con éxito.
+
+          - name: 4. Instalar dependencias con bypass de advertencias
+        run: |
+          npm install --legacy-peer-deps || npm install
+          npm install -D tailwindcss postcss autoprefixer
         
-        - name: 5. Compilar ignorando cualquier advertencia menor
+      - name: 5. Compilar ignorando cualquier advertencia menor
         run: npm run build
 
        - name: 6. Subir artefacto compilado de Vite
@@ -53,6 +65,6 @@ jobs:
         with:
           path: 'dist' # Sube la carpeta de producción generada por Vite
 
-        - name: 7. Desplegar de forma oficial en GitHub Pages
+      - name: 7. Desplegar de forma oficial en GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
