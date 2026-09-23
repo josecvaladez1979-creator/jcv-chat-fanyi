@@ -44,7 +44,7 @@ export default function App() {
     );
   }
 
-  // 2. PANTALLA DE LLAMADA DE VOZ INTERNACIONAL
+  // 2. PANTALLA DE LLAMADA DE VOZ O VIDEO INTERNACIONAL
   if (screen === 'call' || screen === 'video') {
     return (
       <div className="flex flex-col items-center justify-between min-h-screen bg-slate-950 text-white p-8 font-sans">
@@ -71,18 +71,18 @@ export default function App() {
 
         {/* Panel inferior de control con botón para Finalizar */}
         <div className="flex items-center justify-center gap-6 mb-12">
-          <button className="p-4 bg-slate-800 hover:bg-slate-700 rounded-full transition-colors text-white">
+          <button type="button" className="p-4 bg-slate-800 hover:bg-slate-700 rounded-full transition-colors text-white">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4" /></svg>
           </button>
           
           {/* BOTÓN ROJO PARA FINALIZAR LLAMADA */}
-          <button onClick={() => setScreen('chat')} className="p-5 bg-red-600 hover:bg-red-700 rounded-full transition-all transform hover:scale-105 shadow-lg shadow-red-600/30 text-white">
+          <button type="button" onClick={() => setScreen('chat')} className="p-5 bg-red-600 hover:bg-red-700 rounded-full transition-all transform hover:scale-105 shadow-lg shadow-red-600/30 text-white">
             <svg className="w-7 h-7 transform rotate-135" fill="currentColor" viewBox="0 0 20 20">
               <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
             </svg>
           </button>
 
-          <button className="p-4 bg-slate-800 hover:bg-slate-700 rounded-full transition-colors text-white">
+          <button type="button" className="p-4 bg-slate-800 hover:bg-slate-700 rounded-full transition-colors text-white">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.536 15.536a5 5 0 000-7.072m-2.828 9.9a9 9 0 000-12.728" /></svg>
           </button>
         </div>
@@ -104,7 +104,7 @@ export default function App() {
       {/* Header Principal Estilo WhatsApp */}
       <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-800 shadow-md">
         <div className="flex items-center gap-3">
-          <button className="p-1 text-slate-400 hover:text-white transition-colors">
+          <button type="button" className="p-1 text-slate-400 hover:text-white transition-colors">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
           </button>
           <div className="w-10 h-10 bg-slate-800 rounded-full border border-slate-700 flex items-center justify-center font-bold text-blue-400 select-none shadow-inner">
@@ -122,13 +122,13 @@ export default function App() {
 
         {/* BOTONES FUNCIONALES DE LLAMADA Y VIDEOCLAMADA */}
         <div className="flex items-center gap-2">
-          <button onClick={() => setScreen('call')} className="p-2 text-slate-300 hover:text-blue-400 hover:bg-slate-800 rounded-full transition-all" title="Llamada de Voz">
+          <button type="button" onClick={() => setScreen('call')} className="p-2 text-slate-300 hover:text-blue-400 hover:bg-slate-800 rounded-full transition-all" title="Llamada de Voz">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.72.73.73 0 00.73.54h1.5a1 1 0 01.73-.54c.2-.53.77-.82 1.33-.63L19.5 5a2 2 0 012 2v2.28a1 1 0 01-.72.94 2.61 2.61 0 00-.54.73v1.5c0 .41.22.78.54.94l3.22 1.22a2 2 0 012 2V19a2 2 0 01-2 2h-3.28a1 1 0 01-.94-.72l-.74-4.435a1 1 0 01.54-1.06l1.548-.773a11.037 11.037 0 00-6.105-6.105l-.774 1.548a1 1 0 01-1.059.54l-4.435-.74a1 1 0 01-.836-.986V5z" /></svg>
           </button>
-          <button onClick={() => setScreen('video')} className="p-2 text-slate-300 hover:text-blue-400 hover:bg-slate-800 rounded-full transition-all" title="Video Llamada">
+          <button type="button" onClick={() => setScreen('video')} className="p-2 text-slate-300 hover:text-blue-400 hover:bg-slate-800 rounded-full transition-all" title="Video Call">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
           </button>
-          <button className="p-2 text-slate-400 hover:text-white rounded-full"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button>
+          <button type="button" className="p-2 text-slate-400 hover:text-white rounded-full"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button>
         </div>
       </header>
 
@@ -141,5 +141,3 @@ export default function App() {
 
         {chatLog.map((msg, i) => (
           <div key={i} className={`flex flex-col space-y-1.5 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-            <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 shadow-md transition-all ${
-              msg.sender === 'user' 
