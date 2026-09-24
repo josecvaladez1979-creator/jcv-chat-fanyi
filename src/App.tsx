@@ -90,7 +90,7 @@ export default function App() {
     );
   }
 
-  // 3. INTERFAZ PRINCIPAL DE CHAT ESTILO WHATSAPP (LIMPIA)
+  // 3. INTERFAZ PRINCIPAL DE CHAT ESTILO WHATSAPP
   return (
     <div className="flex flex-col min-h-screen bg-slate-950 font-sans antialiased text-slate-200 selection:bg-blue-500/30">
       {/* Sub-Header Superior de Seguridad */}
@@ -101,7 +101,7 @@ export default function App() {
         <span className="flex items-center gap-1"><span className="text-emerald-400">🔒</span> CIFRADO E2EE</span>
       </div>
 
-      {/* Header Principal Estilo WhatsApp */}
+      {/* Header Principal */}
       <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-800 shadow-md">
         <div className="flex items-center gap-3">
           <button type="button" className="p-1 text-slate-400 hover:text-white transition-colors">
@@ -120,24 +120,44 @@ export default function App() {
           </div>
         </div>
 
-        {/* BOTONES FUNCIONALES DE LLAMADA Y VIDEOCLAMADA */}
+        {/* BOTONES DE LLAMADA Y VIDEOLLAMADA */}
         <div className="flex items-center gap-2">
+          {/* Botón Llamada de Voz */}
           <button type="button" onClick={() => setScreen('call')} className="p-2 text-slate-300 hover:text-blue-400 hover:bg-slate-800 rounded-full transition-all" title="Llamada de Voz">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.72.73.73 0 00.73.54h1.5a1 1 0 01.73-.54c.2-.53.77-.82 1.33-.63L19.5 5a2 2 0 012 2v2.28a1 1 0 01-.72.94 2.61 2.61 0 00-.54.73v1.5c0 .41.22.78.54.94l3.22 1.22a2 2 0 012 2V19a2 2 0 01-2 2h-3.28a1 1 0 01-.94-.72l-.74-4.435a1 1 0 01.54-1.06l1.548-.773a11.037 11.037 0 00-6.105-6.105l-.774 1.548a1 1 0 01-1.059.54l-4.435-.74a1 1 0 01-.836-.986V5z" /></svg>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.72l.54 3.22a1 1 0 01-.25.83l-2.2 2.2a15.978 15.978 0 006.415 6.415l2.2-2.2a1 1 0 01.83-.25l3.22.54a1 1 0 01.72.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
           </button>
-          <button type="button" onClick={() => setScreen('video')} className="p-2 text-slate-300 hover:text-blue-400 hover:bg-slate-800 rounded-full transition-all" title="Video Call">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+          {/* Botón Videollamada */}
+          <button type="button" onClick={() => setScreen('video')} className="p-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-full transition-all" title="Videollamada">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
           </button>
-          <button type="button" className="p-2 text-slate-400 hover:text-white rounded-full"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button>
         </div>
       </header>
 
-      {/* Área del chat con burbujas de conversación */}
-      <main className="flex-1 p-4 space-y-4 overflow-y-auto max-w-2xl mx-auto w-full pb-24">
-        {/* Banner de Cifrado Estilo WhatsApp */}
-        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400/90 text-center rounded-xl p-3 text-xs leading-relaxed max-w-sm mx-auto shadow-sm select-none">
-          🔒 Los mensajes y las llamadas están cifrados de extremo a extremo. Solo las personas en este chat pueden leerlos, escucharlos o compartirlos. <span className="underline font-semibold cursor-pointer text-amber-300">Más información</span>
-        </div>
+      {/* Área de Mensajes */}
+      <main className="flex-1 p-4 space-y-4 overflow-y-auto max-w-3xl w-full mx-auto">
+        {chatLog.map((chat, index) => (
+          <div key={index} className={`flex flex-col ${chat.sender === 'user' ? 'items-end' : chat.sender === 'system' ? 'items-center' : 'items-start'}`}>
+            <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 shadow-md ${
+              chat.sender === 'user' 
+                ? 'bg-blue-600 text-white rounded-tr-none' 
+                : chat.sender === 'system'
+                ? 'bg-slate-900 text-slate-400 border border-slate-800 text-xs rounded-xl text-center'
+                : 'bg-slate-900 text-slate-100 rounded-tl-none border border-slate-800'
+            }`}>
+              <p className="text-sm">{chat.text}</p>
+              {chat.translation && chat.sender !== 'system' && (
+                <p className="text-xs text-blue-200 mt-1 border-t border-blue-500/30 pt-1 italic">{chat.translation}</p>
+              )}
+              {chat.translation && chat.sender === 'system' && (
+                <p className="text-xs text-emerald-400 mt-0.5">{chat.translation}</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </main>
 
-        {chatLog.map((msg, i) => (
-          <div key={i} className={`flex flex-col space-y-1.5 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+      {/* Input de Mensajes */}
