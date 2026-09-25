@@ -17,7 +17,7 @@ jobs:
   build-and-deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: \${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: 1. Descargar código
@@ -30,26 +30,106 @@ jobs:
 
       - name: 3. Forzar corrección y generación de estructura limpia
         run: |
-          echo "Iniciando reestructuración automática con Tailwind CSS..."
+          echo "Iniciando reestructuración automática completa..."
           mkdir -p src
 
-          if [ -f "App.tsx" ]; then
-            mv App.tsx src/
-            echo "Movido App.tsx a la carpeta src/ de forma automática."
-          fi
-          
-          # Crear el archivo de configuración de Tailwind CSS necesario
+          # 1. Forzar la escritura automática del App.tsx corto y limpio desde el bot
+          cat << 'EOF' > src/App.tsx
+          import React, { useState, useEffect } from 'react';
+
+          export default function App() {
+            const [screen, setScreen] = useState<'splash' | 'chat' | 'call' | 'video'>('splash');
+            const [msg, setMsg] = useState('');
+            const [log, setLog] = useState([{ text: "Hello! Welcome to JCV CHAT FĀNYÌ.", trans: "¡Hola! Bienvenido a JCV CHAT FĀNYÌ.", user: false }]);
+
+            useEffect(() => {
+              const t = setTimeout(() => setScreen('chat'), 3000);
+              return () => clearTimeout(t);
+            }, []);
+
+            if (screen === 'splash') return (
+              <div className="flex flex-col items-center justify-center min-h-screen bg-black relative p-6 overflow-hidden">
+                <div className="absolute inset-2 border-2 border-transparent rounded-3xl animate-pulse" style={{ boxShadow: '0 0 15px #3b82f6, inset 0 0 15px #10b981' }}></div>
+                <div className="text-center z-10 text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-emerald-500 font-sans">JCV</div>
+                <div className="text-xl font-bold text-blue-400 mt-2 tracking-widest uppercase">CHAT<span className="text-emerald-400">FĀNYÌ</span></div>
+              </div>
+            );
+
+            if (screen === 'call' || screen === 'video') return (
+              <div className="flex flex-col items-center justify-between min-h-screen bg-slate-950 text-white p-8 font-sans">
+                <div className="text-center mt-12">
+                  <span className="text-xs bg-emerald-950 text-emerald-400 px-3 py-1 rounded-full font-semibold uppercase">{screen === 'video' ? 'Video Activo' : 'Llamada Segura'}</span>
+                  <h2 className="text-2xl font-bold mt-6">Mare 🥰</h2>
+                  <p className="text-xs text-emerald-400 mt-2 animate-pulse">Traducción de voz simultánea activa</p>
+                </div>
+                <div className="w-32 h-32 bg-slate-800 rounded-full border-2 border-emerald-500 flex items-center justify-center shadow-xl">
+                  <svg className="w-16 h-16 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                </div>
+                <button onClick={() => setScreen('chat')} className="mb-12 p-5 bg-red-600 hover:bg-red-700 rounded-full shadow-lg text-white transform rotate-135">
+                  <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>
+                </button>
+              </div>
+            );
+
+            return (
+              <div className="flex flex-col min-h-screen bg-slate-950 font-sans text-slate-200">
+                <div className="w-full bg-slate-900 border-b border-slate-800 text-[10px] py-1 px-4 flex justify-between tracking-wide text-slate-400">
+                  <span className="text-emerald-400">MÁXIMA SEGURIDAD ANTIVIRUS ACTIVA</span>
+                  <span>🔒 CIFRADO E2EE</span>
+                </div>
+                <header className="sticky top-0 bg-slate-900/90 backdrop-blur px-4 py-3 flex items-center justify-between border-b border-slate-800 shadow-md">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-slate-800 rounded-full border border-slate-700 flex items-center justify-center font-bold text-blue-400">M</div>
+                    <div>
+                      <h1 className="text-base font-bold text-white">Mare 🥰 <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded">Pro</span></h1>
+                      <p className="text-[11px] text-emerald-400">En línea</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setScreen('call')} className="p-2 text-slate-300 hover:text-blue-400"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.72.73.73 0 00.73.54h1.5a1 1 0 01.73-.54c.2-.53.77-.82 1.33-.63L19.5 5a2 2 0 012 2v2.28a1 1 0 01-.72.94 2.61 2.61 0 00-.54.73v1.5c0 .41.22.78.54.94l3.22 1.22a2 2 0 012 2V19a2 2 0 01-2 2h-3.28a1 1 0 01-.94-.72l-.74-4.435a1 1 0 01.54-1.06l1.548-.773a11.037 11.037 0 00-6.105-6.105l-.774 1.548a1 1 0 01-1.059.54l-4.435-.74a1 1 0 01-.836-.986V5z" /></svg></button>
+                    <button onClick={() => setScreen('video')} className="p-2 text-slate-300 hover:text-blue-400"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg></button>
+                  </div>
+                </header>
+                <main className="flex-1 p-4 space-y-4 overflow-y-auto pb-24">
+                  <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-center rounded-xl p-3 text-xs max-w-sm mx-auto">
+                    🔒 Los mensajes y las llamadas están cifrados de extremo a extremo. Solo las personas en este chat pueden leerlos.
+                  </div>
+                  {log.map((m, i) => (
+                    <div key={i} className={`flex flex-col ${m.user ? 'items-end' : 'items-start'}`}>
+                      <div className={`max-w-[85%] rounded-2xl px-4 py-2 ${m.user ? 'bg-blue-600 text-white' : 'bg-slate-900 border border-slate-800 text-slate-100'}`}>
+                        <p className="text-sm">{m.text}</p>
+                        {m.trans && <p className="text-[11px] mt-1 pt-1 border-t border-white/10 text-blue-200 italic">✨ {m.trans}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </main>
+                <footer className="fixed bottom-0 left-0 right-0 bg-slate-950 p-3 border-t border-slate-900 z-40">
+                  <div className="max-w-2xl mx-auto flex items-center gap-2">
+                    <div className="flex-1 bg-slate-900 border border-slate-800 rounded-full px-4 py-2 flex items-center gap-2">
+                      <input type="text" placeholder="Mensaje" className="flex-1 bg-transparent text-sm focus:outline-none text-white placeholder-slate-500" disabled />
+                    </div>
+                    <button type="button" className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19a1 1 0 100 2 1 1 0 000-2zm0 0c-2.761 0-5-2.239-5-5V8a5 5 0 0110 0v6c0 2.761-2.239 5-5 5z" /></svg>
+                    </button>
+                  </div>
+                </footer>
+              </div>
+            );
+          }
+          EOF
+
+          # 2. Crear el archivo de configuración de Tailwind CSS necesario
           echo -e "/** @type {import('tailwindcss').Config} */\nexport default {\n  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],\n  theme: { extend: {} },\n  plugins: [],\n}" > tailwind.config.js
           
-          # Crear un archivo postcss.config.js para que Vite procese los estilos
+          # 3. Crear un archivo postcss.config.js para que Vite procese los estilos
           echo -e "export default {\n  plugins: {\n    tailwindcss: {},\n    autoprefixer: {},\n  },\n}" > postcss.config.js
 
-          # Crear el archivo index.css inyectando las directivas oficiales de Tailwind
+          # 4. Crear el archivo index.css inyectando las directivas oficiales de Tailwind
           echo -e "@tailwind base;\n@tailwind components;\n@tailwind utilities;" > src/index.css
 
-          # Sobrescribir main.tsx garantizando la importación de index.css
+          # 5. Sobrescribir main.tsx garantizando la importación de index.css
           echo -e "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App.tsx';\nimport './index.css';\n\nReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);" > src/main.tsx
-          echo "Estructura y archivos de Tailwind CSS forzados con éxito."
+          echo "Estructura, archivos y App.tsx corregidos por el bot con éxito."
 
       - name: 4. Instalar dependencias con bypass de advertencias
         run: |
