@@ -33,29 +33,25 @@ jobs:
           echo "Iniciando reestructuración automática completa..."
           mkdir -p src
 
-          # Forzar la escritura del App.tsx inteligente con Registro, Escritura y Pantalla Limpia
+          # Escritura del App.tsx inteligente corregido
           cat << 'EOF' > src/App.tsx
           import React, { useState, useEffect } from 'react';
 
           export default function App() {
-            // Control de pantallas: 'register' (Registro), 'splash' (Carga), 'chat' (Mensajes), 'call', 'video'
             const [screen, setScreen] = useState<'register' | 'splash' | 'chat' | 'call' | 'video'>('register');
             const [username, setUsername] = useState('');
             const [userPhone, setUserPhone] = useState('');
             const [msg, setMsg] = useState('');
             const [log, setLog] = useState([
-              { text: "Hello! Welcome to JCV CHAT FĀNYÌ.", trans: "¡Hola! Bienvenido a JCV CHAT FĀNYÌ.", user: Real, name: "Valadez 🥰" }
+              { text: "Hello! Welcome to JCV CHAT FĀNYÌ.", trans: "¡Hola! Bienvenido a JCV CHAT FĀNYÌ.", user: false, name: "Sistema ✨" }
             ]);
 
-            // Manejo del formulario de registro
             const handleRegister = (e: React.FormEvent) => {
               e.preventDefault();
               if (!username.trim() || !userPhone.trim()) return;
-              // Pasamos primero a la pantalla de carga neón
               setScreen('splash');
             };
 
-            // Temporizador para la pantalla de carga
             useEffect(() => {
               if (screen === 'splash') {
                 const t = setTimeout(() => setScreen('chat'), 2500);
@@ -63,7 +59,6 @@ jobs:
               }
             }, [screen]);
 
-            // Enviar un mensaje real en el chat
             const handleSendMessage = (e: React.FormEvent) => {
               e.preventDefault();
               if (!msg.trim()) return;
@@ -71,74 +66,74 @@ jobs:
               setMsg('');
             };
 
-            // ==========================================
-            // PANTALLA A: REGISTRO DE USUARIOS
-            // ==========================================
+            // 1. PANTALLA DE REGISTRO
             if (screen === 'register') return (
               <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white p-6 font-sans">
                 <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center">
                   <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-emerald-400">JCV CHAT</h2>
                   <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Crear Cuenta Nueva</p>
-                  
                   <form onSubmit={handleRegister} className="mt-8 space-y-4 text-left">
                     <div>
-                      <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Nombre de Usuario</label>
-                      <input type="text" required value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Ej. José Valadez" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
+                      <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Nombre de Usuario o Celular</label>
+                      <input type="text" required value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Tu nombre o número" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Número de Celular</label>
-                      <input type="tel" required value={userPhone} onChange={(e) => setUserPhone(e.target.value)} placeholder="+52 1 234 5678" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
+                      <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Contraseña o Código de Acceso</label>
+                      <input type="password" required value={userPhone} onChange={(e) => setUserPhone(e.target.value)} placeholder="••••••••" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
                     </div>
-                    <button type="submit" className="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-500 hover:from-blue-500 hover:to-emerald-400 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-blue-500/10 active:scale-98">
-                      Registrarse y Entrar
-                    </button>
+                    <button type="submit" className="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-500 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-lg active:scale-98">Entrar a la Aplicación</button>
                   </form>
                 </div>
               </div>
             );
 
-            // ==========================================
-            // PANTALLA B: SPLASH SCREEN (MARCA NEÓN)
-            // ==========================================
+            // 2. SPLASH SCREEN (LOGOTIPO CON EL MUNDO DENTRO DE LA C)
             if (screen === 'splash') return (
               <div className="flex flex-col items-center justify-center min-h-screen bg-black relative p-6 overflow-hidden">
-                <div className="absolute inset-2 border-2 border-transparent rounded-3xl animate-pulse" style={{ boxShadow: '0 0 15px #3b82f6, inset 0 0 15px #10b981' }}></div>
-                <div className="text-center z-10 text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-emerald-500 font-sans">JCV</div>
-                <div className="text-xl font-bold text-blue-400 mt-2 tracking-widest uppercase">CHAT<span className="text-emerald-400">FĀNYÌ</span></div>
-                <p className="text-[10px] text-slate-500 tracking-wider uppercase mt-4">Iniciando sesión segura...</p>
+                <div className="absolute inset-4 border border-transparent rounded-3xl animate-pulse" style={{ boxShadow: '0 0 15px #3b82f6, inset 0 0 15px #10b981' }}></div>
+                <div className="text-center z-10 font-sans flex items-center justify-center font-black tracking-tighter text-8xl">
+                  <span className="text-blue-500">J</span>
+                  {/* Letra C con el planeta Tierra adentro */}
+                  <div className="relative w-24 h-24 flex items-center justify-center text-cyan-400 mx-[-4px]">
+                    <span>C</span>
+                    <div className="absolute w-10 h-10 rounded-full border border-emerald-400 bg-cyan-950/40 flex items-center justify-center overflow-hidden">
+                      <div className="absolute w-full h-[1px] bg-emerald-400/50"></div>
+                      <div className="absolute h-full w-[1px] bg-emerald-400/50"></div>
+                      <div className="w-8 h-4 rounded-full border border-emerald-400/40 absolute"></div>
+                      <div className="h-8 w-4 rounded-full border border-emerald-400/40 absolute"></div>
+                    </div>
+                  </div>
+                  <span className="text-emerald-500">V</span>
+                </div>
+                <div className="text-2xl font-bold text-blue-400 mt-2 tracking-widest uppercase font-sans">CHAT<span className="text-emerald-400">FĀNYÌ</span></div>
               </div>
             );
 
-            // ==========================================
-            // PANTALLA C: LLAMADAS
-            // ==========================================
+            // 3. PANTALLA DE LLAMADAS
             if (screen === 'call' || screen === 'video') return (
               <div className="flex flex-col items-center justify-between min-h-screen bg-slate-950 text-white p-8 font-sans">
                 <div className="text-center mt-12">
                   <span className="text-xs bg-emerald-950 text-emerald-400 px-3 py-1 rounded-full font-semibold uppercase">{screen === 'video' ? 'Video Activo' : 'Llamada Segura'}</span>
-                  <h2 className="text-2xl font-bold mt-6">Valadez 🥰</h2>
-                  <p className="text-xs text-emerald-400 mt-2 animate-pulse">Traducción de voz simultánea activa</p>
+                  <h2 className="text-2xl font-bold mt-6">{username}</h2>
+                  <p className="text-xs text-emerald-400 mt-2 animate-pulse">Traducción simultánea activa</p>
                 </div>
-                <div className="w-32 h-32 bg-slate-800 rounded-full border-2 border-emerald-500 flex items-center justify-center shadow-xl">
+                <div className="w-32 h-32 bg-slate-800 rounded-full border border-emerald-500 flex items-center justify-center shadow-xl">
                   <svg className="w-16 h-16 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
-                <button type="button" onClick={() => setScreen('chat')} className="mb-12 p-5 bg-red-600 hover:bg-red-700 rounded-full shadow-lg text-white transform rotate-135">
+                <button type="button" onClick={() => setScreen('chat')} className="mb-12 p-5 bg-red-600 hover:bg-red-700 rounded-full text-white transform rotate-135">
                   <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>
                 </button>
               </div>
             );
 
-            // ==========================================
-            // PANTALLA D: INTERFAZ DE CHAT (PANTALLA LIMPIA)
-            // ==========================================
+            // 4. PANTALLA PRINCIPAL DE CHAT LIMPIA
             return (
               <div className="flex flex-col min-h-screen bg-slate-950 font-sans text-slate-200">
-                {/* Header Principal Limpio sin el banner de Antivirus superior */}
-                <header className="sticky top-0 bg-slate-900 px-4 py-3.5 flex items-center justify-between border-b border-slate-800 shadow-md z-40">
+                <header className="sticky top-0 bg-slate-900 px-4 py-4 flex items-center justify-between border-b border-slate-800 shadow-md z-40">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-slate-800 rounded-full border border-slate-700 flex items-center justify-center font-bold text-blue-400 select-none">M</div>
+                    <div className="w-10 h-10 bg-slate-800 rounded-full border border-slate-700 flex items-center justify-center font-bold text-blue-400">U</div>
                     <div>
-                      <h1 className="text-base font-bold text-white flex items-center gap-1.5">Valadez 🥰 <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider">Pro</span></h1>
+                      <h1 className="text-base font-bold text-white flex items-center gap-1.5">{username} <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded font-semibold uppercase">Pro</span></h1>
                       <p className="text-[11px] text-emerald-400">En línea</p>
                     </div>
                   </div>
@@ -148,4 +143,7 @@ jobs:
                   </div>
                 </header>
 
-                {/* Historial del chat */}
+                <main className="flex-1 p-4 space-y-4 overflow-y-auto pb-24 max-w-2xl mx-auto w-full">
+                  {log.map((m, i) => (
+                    <div key={i} className={`flex flex-col ${m.user ? 'items-end' : 'items-start'}`}>
+                      <span className="text-[10px] text-slate-500 mb-1 px-1">{m.name}</span>
