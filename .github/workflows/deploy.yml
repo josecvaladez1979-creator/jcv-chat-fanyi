@@ -33,7 +33,7 @@ jobs:
           echo "Iniciando reestructuración automática completa..."
           mkdir -p src
 
-          # Forzar la escritura del App.tsx inteligente con Registro y Pantalla Limpia
+          # 1. Forzar la escritura automática del App.tsx inteligente
           cat << 'EOF' > src/App.tsx
           import React, { useState, useEffect } from 'react';
 
@@ -66,7 +66,6 @@ jobs:
               setMsg('');
             };
 
-            // 1. PANTALLA DE REGISTRO
             if (screen === 'register') return (
               <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white p-6 font-sans">
                 <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center">
@@ -90,13 +89,11 @@ jobs:
               </div>
             );
 
-            // 2. SPLASH SCREEN (LOGOTIPO CON EL MUNDO INTERNO DENTRO DE LA C)
             if (screen === 'splash') return (
               <div className="flex flex-col items-center justify-center min-h-screen bg-black relative p-6 overflow-hidden">
                 <div className="absolute inset-4 border border-transparent rounded-3xl animate-pulse" style={{ boxShadow: '0 0 15px #3b82f6, inset 0 0 15px #10b981' }}></div>
                 <div className="text-center z-10 font-sans flex items-center justify-center font-black tracking-tighter text-8xl">
                   <span className="text-blue-500">J</span>
-                  {/* Letra C diseñada con un Planeta Tierra integrado en su centro */}
                   <div className="relative w-24 h-24 flex items-center justify-center text-cyan-400 mx-[-4px]">
                     <span>C</span>
                     <div className="absolute w-10 h-10 rounded-full border border-emerald-400 bg-cyan-950/40 flex items-center justify-center overflow-hidden">
@@ -112,7 +109,6 @@ jobs:
               </div>
             );
 
-            // 3. PANTALLA DE LLAMADAS
             if (screen === 'call' || screen === 'video') return (
               <div className="flex flex-col items-center justify-between min-h-screen bg-slate-950 text-white p-8 font-sans">
                 <div className="text-center mt-12">
@@ -129,10 +125,8 @@ jobs:
               </div>
             );
 
-            // 4. INTERFAZ PRINCIPAL DE CHAT COMPLETAMENTE LIMPIA
             return (
               <div className="flex flex-col min-h-screen bg-slate-950 font-sans text-slate-200">
-                {/* Cabecera Limpia - Muestra el Nombre registrado por el usuario */}
                 <header className="sticky top-0 bg-slate-900 px-4 py-4 flex items-center justify-between border-b border-slate-800 shadow-md z-40">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-slate-800 rounded-full border border-slate-700 flex items-center justify-center font-bold text-blue-400">U</div>
@@ -147,5 +141,8 @@ jobs:
                   </div>
                 </header>
 
-                {/* Historial de conversación */}
                 <main className="flex-1 p-4 space-y-4 overflow-y-auto pb-24 max-w-2xl mx-auto w-full">
+                  {log.map((m, i) => (
+                    <div key={i} className={`flex flex-col ${m.user ? 'items-end' : 'items-start'}`}>
+                      <span className="text-[10px] text-slate-500 mb-1 px-1">{m.name}</span>
+                      <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 shadow-md ${m.user ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-slate-900 border border-slate-800 text-slate-100 rounded-tl-none'}`}>
