@@ -17,10 +17,10 @@ jobs:
   build-and-deploy:
     environment:
       name: github-pages
-      url: \${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Descargar codigo
+      - name: 1. Descargar código
         uses: actions/checkout@v4
 
       - name: 2. Configurar Node.js
@@ -28,108 +28,72 @@ jobs:
         with:
           node-version: 20
 
-      - name: 3. Forzar correccion y generacion de estructura limpia
+      - name: 3. Forzar corrección y generación de estructura limpia
         run: |
-          echo "Iniciando reestructuracion automatica completa..."
-          mkdir -p src public
-          
-          # Generar archivo HTML principal si no existe
-          cat << 'EOF' > index.html
-          <!DOCTYPE html>
-          <html lang="es">
-            <head>
-              <meta charset="UTF-8" />
-              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-              <title>JCV CHAT FĀNYÌ</title>
-            </head>
-            <body class="bg-slate-950">
-              <div id="root"></div>
-              <script type="module" src="/src/main.tsx"></script>
-            </body>
-          </html>
-          EOF
+          echo "Iniciando reestructuración automática completa..."
+          mkdir -p src
 
-          # Generar archivo de entrada de React (main.tsx)
-          cat << 'EOF' > src/main.tsx
-          import React from 'react'
-          import ReactDOM from 'react-dom/client'
-          import App from './App.tsx'
-          import './index.css'
-
-          ReactDOM.createRoot(document.getElementById('root')!).render(
-            <React.StrictMode>
-              <App />
-            </React.StrictMode>,
-          )
-          EOF
-
-          # Crear archivo CSS básico para que Tailwind no rompa el diseño
-          cat << 'EOF' > src/index.css
-          @tailwind base;
-          @tailwind components;
-          @tailwind utilities;
-          EOF
-
-          # 1. Forzar la escritura automatica del App.tsx inteligente
+          # Escritura del App.tsx inteligente corregido
           cat << 'EOF' > src/App.tsx
           import React, { useState, useEffect } from 'react';
+
           export default function App() {
             const [screen, setScreen] = useState<'register' | 'splash' | 'chat' | 'call' | 'video'>('register');
             const [username, setUsername] = useState('');
             const [userPhone, setUserPhone] = useState('');
             const [msg, setMsg] = useState('');
             const [log, setLog] = useState([
-              { text: "¡Hola! Bienvenido a JCV CHAT FĀNYÌ.", trans: "¡Hola! Bienvenido a JCV CHAT FĀNYÌ.", user: false, name: "Sistema ✨" }
+              { text: "Hello! Welcome to JCV CHAT FĀNYÌ.", trans: "¡Hola! Bienvenido a JCV CHAT FĀNYÌ.", user: false, name: "Sistema ✨" }
             ]);
-            
+
             const handleRegister = (e: React.FormEvent) => {
               e.preventDefault();
               if (!username.trim() || !userPhone.trim()) return;
               setScreen('splash');
             };
-            
+
             useEffect(() => {
               if (screen === 'splash') {
                 const t = setTimeout(() => setScreen('chat'), 2500);
                 return () => clearTimeout(t);
               }
             }, [screen]);
-            
+
             const handleSendMessage = (e: React.FormEvent) => {
               e.preventDefault();
               if (!msg.trim()) return;
               setLog([...log, { text: msg, trans: `[Traducido]: ${msg}`, user: true, name: username }]);
               setMsg('');
             };
-            
+
+            // 1. PANTALLA DE REGISTRO
             if (screen === 'register') return (
               <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white p-6 font-sans">
                 <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center">
                   <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-emerald-400">JCV CHAT</h2>
                   <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Crear Cuenta Nueva</p>
-                  
                   <form onSubmit={handleRegister} className="mt-8 space-y-4 text-left">
                     <div>
-                      <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Nombre de Usuario o Número</label>
-                      <input type="text" required value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Escribe tu nombre o celular" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
+                      <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Nombre de Usuario o Celular</label>
+                      <input type="text" required value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Tu nombre o número" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Código de Acceso (Contraseña)</label>
+                      <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Contraseña o Código de Acceso</label>
                       <input type="password" required value={userPhone} onChange={(e) => setUserPhone(e.target.value)} placeholder="••••••••" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
                     </div>
-                    <button type="submit" className="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-500 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-lg active:scale-98">
-                      Registrarse y Entrar
-                    </button>
+                    <button type="submit" className="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-500 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-lg active:scale-98">Entrar a la Aplicación</button>
                   </form>
                 </div>
               </div>
             );
-            
+
+            // 2. SPLASH SCREEN (LOGOTIPO CON EL MUNDO DENTRO DE LA C)
             if (screen === 'splash') return (
               <div className="flex flex-col items-center justify-center min-h-screen bg-black relative p-6 overflow-hidden">
                 <div className="absolute inset-4 border border-transparent rounded-3xl animate-pulse" style={{ boxShadow: '0 0 15px #3b82f6, inset 0 0 15px #10b981' }}></div>
                 <div className="text-center z-10 font-sans flex items-center justify-center font-black tracking-tighter text-8xl">
                   <span className="text-blue-500">J</span>
+                  {/* Letra C con el planeta Tierra adentro */}
                   <div className="relative w-24 h-24 flex items-center justify-center text-cyan-400 mx-[-4px]">
                     <span>C</span>
                     <div className="absolute w-10 h-10 rounded-full border border-emerald-400 bg-cyan-950/40 flex items-center justify-center overflow-hidden">
@@ -144,15 +108,16 @@ jobs:
                 <div className="text-2xl font-bold text-blue-400 mt-2 tracking-widest uppercase font-sans">CHAT<span className="text-emerald-400">FĀNYÌ</span></div>
               </div>
             );
-            
-            if (screen === 'llamada' || screen === 'video') return (
+
+            // 3. PANTALLA DE LLAMADAS
+            if (screen === 'call' || screen === 'video') return (
               <div className="flex flex-col items-center justify-between min-h-screen bg-slate-950 text-white p-8 font-sans">
                 <div className="text-center mt-12">
                   <span className="text-xs bg-emerald-950 text-emerald-400 px-3 py-1 rounded-full font-semibold uppercase">{screen === 'video' ? 'Video Activo' : 'Llamada Segura'}</span>
                   <h2 className="text-2xl font-bold mt-6">{username}</h2>
                   <p className="text-xs text-emerald-400 mt-2 animate-pulse">Traducción simultánea activa</p>
                 </div>
-                <div className="w-32 h-32 bg-slate-800 rounded-full border-2 border-emerald-500 flex items-center justify-center shadow-xl">
+                <div className="w-32 h-32 bg-slate-800 rounded-full border border-emerald-500 flex items-center justify-center shadow-xl">
                   <svg className="w-16 h-16 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
                 <button type="button" onClick={() => setScreen('chat')} className="mb-12 p-5 bg-red-600 hover:bg-red-700 rounded-full text-white transform rotate-135">
@@ -160,32 +125,25 @@ jobs:
                 </button>
               </div>
             );
-            
+
+            // 4. PANTALLA PRINCIPAL DE CHAT LIMPIA
             return (
               <div className="flex flex-col min-h-screen bg-slate-950 font-sans text-slate-200">
                 <header className="sticky top-0 bg-slate-900 px-4 py-4 flex items-center justify-between border-b border-slate-800 shadow-md z-40">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-slate-800 rounded-full border border-slate-700 flex items-center justify-center font-bold text-blue-400">U</div>
                     <div>
-                      <h1 className="text-base font-bold text-white flex items-center gap-1.5">{username} <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded">En línea</span></h1>
+                      <h1 className="text-base font-bold text-white flex items-center gap-1.5">{username} <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded font-semibold uppercase">Pro</span></h1>
+                      <p className="text-[11px] text-emerald-400">En línea</p>
                     </div>
                   </div>
+                  <div className="flex items-center gap-3">
+                    <button type="button" onClick={() => setScreen('call')} className="p-1 text-slate-300 hover:text-blue-400"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.72.73.73 0 00.73.54h1.5a1 1 0 01.73-.54c.2-.53.77-.82 1.33-.63L19.5 5a2 2 0 012 2v2.28a1 1 0 01-.72.94 2.61 2.61 0 00-.54.73v1.5c0 .41.22.78.54.94l3.22 1.22a2 2 0 012 2V19a2 2 0 01-2 2h-3.28a1 1 0 01-.94-.72l-.74-4.435a1 1 0 01.54-1.06l1.548-.773a11.037 11.037 0 00-6.105-6.105l-.774 1.548a1 1 0 01-1.059.54l-4.435-.74a1 1 0 01-.836-.986V5z" /></svg></button>
+                    <button type="button" onClick={() => setScreen('video')} className="p-1 text-slate-300 hover:text-blue-400"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg></button>
+                  </div>
                 </header>
-              </div>
-            );
-          }
-          EOF
 
-      - name: 4. Instalar dependencias y Compilar proyecto
-        run: |
-          npm install
-          npm run build --if-present
-
-      - name: 5. Subir artefactos para GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist' # O './build' dependiendo de tu bundler (Vite usa dist)
-
-      - name: 6. Ejecutar despliegue final
-        id: deployment
-        uses: actions/deploy-pages@v4
+                <main className="flex-1 p-4 space-y-4 overflow-y-auto pb-24 max-w-2xl mx-auto w-full">
+                  {log.map((m, i) => (
+                    <div key={i} className={`flex flex-col ${m.user ? 'items-end' : 'items-start'}`}>
+                      <span className="text-[10px] text-slate-500 mb-1 px-1">{m.name}</span>
