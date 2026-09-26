@@ -31,7 +31,45 @@ jobs:
       - name: 3. Forzar correccion y generacion de estructura limpia
         run: |
           echo "Iniciando reestructuracion automatica completa..."
-          mkdir -p src
+          mkdir -p src public
+          
+          # Generar archivo HTML principal si no existe
+          cat << 'EOF' > index.html
+          <!DOCTYPE html>
+          <html lang="es">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>JCV CHAT FĀNYÌ</title>
+            </head>
+            <body class="bg-slate-950">
+              <div id="root"></div>
+              <script type="module" src="/src/main.tsx"></script>
+            </body>
+          </html>
+          EOF
+
+          # Generar archivo de entrada de React (main.tsx)
+          cat << 'EOF' > src/main.tsx
+          import React from 'react'
+          import ReactDOM from 'react-dom/client'
+          import App from './App.tsx'
+          import './index.css'
+
+          ReactDOM.createRoot(document.getElementById('root')!).render(
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>,
+          )
+          EOF
+
+          # Crear archivo CSS básico para que Tailwind no rompa el diseño
+          cat << 'EOF' > src/index.css
+          @tailwind base;
+          @tailwind components;
+          @tailwind utilities;
+          EOF
+
           # 1. Forzar la escritura automatica del App.tsx inteligente
           cat << 'EOF' > src/App.tsx
           import React, { useState, useEffect } from 'react';
@@ -43,23 +81,27 @@ jobs:
             const [log, setLog] = useState([
               { text: "¡Hola! Bienvenido a JCV CHAT FĀNYÌ.", trans: "¡Hola! Bienvenido a JCV CHAT FĀNYÌ.", user: false, name: "Sistema ✨" }
             ]);
+            
             const handleRegister = (e: React.FormEvent) => {
               e.preventDefault();
               if (!username.trim() || !userPhone.trim()) return;
               setScreen('splash');
             };
+            
             useEffect(() => {
               if (screen === 'splash') {
                 const t = setTimeout(() => setScreen('chat'), 2500);
                 return () => clearTimeout(t);
               }
             }, [screen]);
+            
             const handleSendMessage = (e: React.FormEvent) => {
               e.preventDefault();
               if (!msg.trim()) return;
               setLog([...log, { text: msg, trans: `[Traducido]: ${msg}`, user: true, name: username }]);
               setMsg('');
             };
+            
             if (screen === 'register') return (
               <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white p-6 font-sans">
                 <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center">
@@ -82,6 +124,7 @@ jobs:
                 </div>
               </div>
             );
+            
             if (screen === 'splash') return (
               <div className="flex flex-col items-center justify-center min-h-screen bg-black relative p-6 overflow-hidden">
                 <div className="absolute inset-4 border border-transparent rounded-3xl animate-pulse" style={{ boxShadow: '0 0 15px #3b82f6, inset 0 0 15px #10b981' }}></div>
@@ -101,6 +144,7 @@ jobs:
                 <div className="text-2xl font-bold text-blue-400 mt-2 tracking-widest uppercase font-sans">CHAT<span className="text-emerald-400">FĀNYÌ</span></div>
               </div>
             );
+            
             if (screen === 'llamada' || screen === 'video') return (
               <div className="flex flex-col items-center justify-between min-h-screen bg-slate-950 text-white p-8 font-sans">
                 <div className="text-center mt-12">
@@ -116,6 +160,7 @@ jobs:
                 </button>
               </div>
             );
+            
             return (
               <div className="flex flex-col min-h-screen bg-slate-950 font-sans text-slate-200">
                 <header className="sticky top-0 bg-slate-900 px-4 py-4 flex items-center justify-between border-b border-slate-800 shadow-md z-40">
@@ -130,3 +175,17 @@ jobs:
             );
           }
           EOF
+
+      - name: 4. Instalar dependencias y Compilar proyecto
+        run: |
+          npm install
+          npm run build --if-present
+
+      - name: 5. Subir artefactos para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # O './build' dependiendo de tu bundler (Vite usa dist)
+
+      - name: 6. Ejecutar despliegue final
+        id: deployment
+        uses: actions/deploy-pages@v4
