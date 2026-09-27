@@ -146,3 +146,60 @@ jobs:
                     <div key={i} className={`flex flex-col ${m.user ? 'items-end' : 'items-start'}`}>
                       <span className="text-[10px] text-slate-500 mb-1 px-1">{m.name}</span>
                       <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 shadow-md ${m.user ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-slate-900 border border-slate-800 text-slate-100 rounded-tl-none'}`}>
+                                              <p className="text-sm leading-relaxed">{m.text}</p>
+                        <p className="text-[11px] text-emerald-400 mt-1 border-t border-slate-700/50 pt-1">
+                          {m.trans}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </main>
+
+                <form
+                  onSubmit={handleSendMessage}
+                  className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 p-3 z-50"
+                >
+                  <div className="max-w-2xl mx-auto flex gap-2">
+                    <input
+                      type="text"
+                      value={msg}
+                      onChange={(e) => setMsg(e.target.value)}
+                      placeholder="Escribe tu mensaje..."
+                      className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500"
+                    />
+
+                    <button
+                      type="submit"
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 rounded-xl transition-colors"
+                    >
+                      Enviar
+                    </button>
+                  </div>
+                </form>
+              </div>
+            );
+          }
+          EOF
+
+                    # 2. Instalar dependencias
+          - name: 4. Instalar dependencias
+            run: npm install
+
+          # 3. Construir la aplicación
+          - name: 5. Construir aplicación
+            run: npm run build
+
+          # 4. Configurar GitHub Pages
+          - name: 6. Configurar GitHub Pages
+            uses: actions/configure-pages@v5
+
+          # 5. Preparar los archivos para Pages
+          - name: 7. Subir artefacto de Pages
+            uses: actions/upload-pages-artifact@v3
+            with:
+              path: './dist'
+
+          # 6. Desplegar en GitHub Pages
+          - name: 8. Desplegar aplicación
+            id: deployment
+            uses: actions/deploy-pages@v4
