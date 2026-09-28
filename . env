@@ -1,0 +1,8 @@
+# Puerto en el que correrá tu servidor híbrido local
+PORT=3000
+
+# Tu clave secreta de la IA China DeepSeek (La obtienes gratis en su web)
+DEEPSEEK_API_KEY=sk_tu_clave_secreta_aqui
+
+# La URL de tu nodo gratuito de procesamiento de voz en Hugging Face
+SEAMLESS_NODE_URL=https://hf.space
