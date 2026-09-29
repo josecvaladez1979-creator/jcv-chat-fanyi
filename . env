@@ -1,8 +1,23 @@
-# Puerto en el que correrá tu servidor híbrido local
+# ========================================================
+# JCV CHAT FĀNYÌ - BACKEND
+# ========================================================
+
 PORT=3000
 
-# Tu clave secreta de la IA China DeepSeek (La obtienes gratis en su web)
-DEEPSEEK_API_KEY=sk_tu_clave_secreta_aqui
+# API de SiliconFlow
+SILICONFLOW_API_KEY=TU_CLAVE_REAL_DE_SILICONFLOW
 
-# La URL de tu nodo gratuito de procesamiento de voz en Hugging Face
-SEAMLESS_NODE_URL=https://hf.space
+# Modelo principal de traducción.
+# Se puede cambiar sin modificar server.js.
+TEXT_MODEL=deepseek-ai/DeepSeek-V4-Flash
+
+# Nivel de traducción:
+# fast = una pasada
+# accurate = traducción + revisión
+TRANSLATION_MODE=accurate
+
+# Nodo futuro de voz / SeamlessM4T v2
+SEAMLESS_NODE_URL=http://localhost:8000
+
+# Lo dejaremos preparado para el futuro motor de voz
+VOICE_ENGINE_ENABLED=false
